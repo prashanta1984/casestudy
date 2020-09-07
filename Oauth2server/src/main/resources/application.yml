@@ -1,0 +1,38 @@
+server:
+  port: 9999
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+eureka:
+  instance:
+    instanceId: ${spring.application.name}:${random.int}
+    leaseRenewalIntervalInSeconds: 2
+    leaseExpirationDurationInSeconds: 5
+    preferIpAddress: true
+    metadata-map:
+      zone: A
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${Oauth2server.eureka.url:http://192.168.99.100:8761/eureka}
+
+spring:
+  sleuth:
+    trace-id128: true
+    sampler:
+      probability: 1.0
+  zipkin:
+    base-url: http://zipkin:9411/
+  rabbitmq:
+    host: rabbitmq-master
+    port: 5672
+  cloud:
+    bus:
+      enabled: true
+      destination: configXchangebus                
+    

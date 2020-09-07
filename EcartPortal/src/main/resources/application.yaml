@@ -1,0 +1,54 @@
+server:
+  port: 8080
+
+eureka:
+  instance:
+    instanceId: ${spring.application.name}:${random.int}
+    leaseRenewalIntervalInSeconds: 2
+    leaseExpirationDurationInSeconds: 5
+    preferIpAddress: true
+    metadata-map:
+      zone: A
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${EcartPortal.eureka.url:http://192.168.99.100:8761/eureka}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*' 
+
+spring:  thymeleaf:    cache: false
+    enabled: true
+    prefix: classpath:/templates/
+    suffix: .jsp   
+  sleuth:
+    trace-id128: true
+    sampler:
+      probability: 1.0
+  zipkin:
+    base-url: http://zipkin:9411/   
+  rabbitmq:
+    host: rabbitmq-master
+    port: 5672
+  cloud:
+    bus:
+      enabled: true
+      destination: configXchangebus   
+    stream:
+      bindings:
+        greetingChannel:
+           destination: greetings 
+
+feign:
+  hystrix:
+    enabled: true
+
+logging:
+  pattern:
+    console: '%d %p %X{correlationId} %M\(%F:%L\) - %msg%n'
+  level:
+    com.ms.caseStudy: DEBUG              

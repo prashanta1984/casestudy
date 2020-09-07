@@ -1,0 +1,20 @@
+server:
+  port: 8082
+spring:  application:    name: login 
+eureka:
+  instance:
+    instanceId: ${spring.application.name}:${random.int}
+    leaseRenewalIntervalInSeconds: 2
+    leaseExpirationDurationInSeconds: 5
+    preferIpAddress: true
+    metadata-map:
+      zone: A
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    prefer-same-zone-eureka: true
+    serviceUrl:
+    # defaultZone: ${conversionfactor.eureka.url:http://192.168.99.100:8761/eureka}
+       defaultZone: ${login.eureka.url:http://localhost:8761/eureka}
+
+          

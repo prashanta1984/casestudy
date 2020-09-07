@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: Oauth2server
+  cloud:
+    config:
+      uri: ${Oauth2server.configserverurl:http://192.168.99.100:8888}
+      fail-fast: false
+  profiles:
+    active: dev  

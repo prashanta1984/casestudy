@@ -1,0 +1,63 @@
+server:
+  port: 0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+        
+eureka:
+  instance:
+    instanceId: ${spring.application.name}:${random.int}
+    leaseRenewalIntervalInSeconds: 2
+    leaseExpirationDurationInSeconds: 5
+    preferIpAddress: true
+    metadata-map:
+      zone: A
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${CartMS.eureka.url:http://192.168.99.100:8761/eureka}
+
+spring:
+  h2:
+    console:
+      enabled: true
+      path: /h2
+      settings:
+        web-allow-others: true
+  datasource:
+    url: "jdbc:h2:mem:cartDB:DB_CLOSE_DELAY=-1"
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        show_sql: true
+        ddl-auto: create-drop  
+  sleuth:
+    trace-id128: true
+    sampler:
+      probability: 1.0
+  zipkin:
+    base-url: http://zipkin:9411/
+  rabbitmq:
+    host: rabbitmq-master
+    port: 5672
+  cloud:
+    bus:
+      enabled: true
+      destination: configXchangebus
+    stream:
+      bindings:
+        orderChannel:
+           destination: orders        
+logging:
+  pattern:
+    console: '%d %p %X{correlationId} %M\(%F:%L\) - %msg%n'
+  level:
+    com.ms.caseStudy.CartMS: DEBUG       

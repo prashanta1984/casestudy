@@ -1,0 +1,22 @@
+#spring:
+# cloud:
+#    config:
+      #uri: ${cloudapigateway.configserverurl:http://localhost:8888}
+#      uri: ${cloudapigateway.configserverurl:http://192.168.99.100:8888}
+#      fail-fast: false
+  
+#profiles:#    active: dev
+
+
+spring:  application:    name: cloudapigateway
+   
+  cloud:
+    gateway:
+      routes:
+      - id: account-login-service
+        uri: lb://account-login-service
+        predicates:
+        - Path=/authenticate/**
+server:  port: 9092
+   
+ 
