@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,8 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-
+import org.springframework.integration.support.MessageBuilder;
+import com.ibm.cartservice.audit.OrderServiceSource;
 import com.ibm.cartservice.bean.CartBean;
 import com.ibm.cartservice.bean.Product;
 import com.ibm.cartservice.client.ProductFeignClient;
@@ -29,6 +30,7 @@ import com.ibm.cartservice.repo.CartRepository;
 
 @RestController
 @RequestMapping("/cart")
+@EnableBinding(OrderServiceSource.class)
 public class CartController {
 	
 	Logger logger = LoggerFactory.getLogger(CartController.class);
@@ -37,6 +39,9 @@ public class CartController {
 	CartRepository cartRepository;
 	@Autowired
 	ProductFeignClient productFeignClient;
+	
+	@Autowired
+	OrderServiceSource orderServiceSource;
 	
 	//private MessageChannel orderChannel;
 	 
@@ -71,7 +76,9 @@ public class CartController {
 				cartList.add(cart);
 			}
 		}
+		orderServiceSource.orderChannel().send(MessageBuilder.withPayload(cartBean).build());
 		cartRepository.saveAll(cartList);
+		
 		logger.debug("add to cart successful");
 	}
 
