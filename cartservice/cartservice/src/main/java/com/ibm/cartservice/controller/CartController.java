@@ -1,6 +1,7 @@
 package com.ibm.cartservice.controller;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,11 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.integration.support.MessageBuilder;
 import com.ibm.cartservice.audit.OrderServiceSource;
 import com.ibm.cartservice.bean.CartBean;
+import com.ibm.cartservice.bean.Orders;
 import com.ibm.cartservice.bean.Product;
+import com.ibm.cartservice.client.OrderFeignClient;
 import com.ibm.cartservice.client.ProductFeignClient;
+import com.ibm.cartservice.dto.OrdersDTO;
 import com.ibm.cartservice.dto.ProductDTO;
 import com.ibm.cartservice.model.Cart;
 import com.ibm.cartservice.repo.CartRepository;
+import com.ibm.cartservice.repo.OrdersRepository;
 
 
 
@@ -42,6 +47,11 @@ public class CartController {
 	
 	@Autowired
 	OrderServiceSource orderServiceSource;
+	@Autowired
+	OrderFeignClient orderFeignClient;
+	
+	@Autowired
+	OrdersRepository orderRepository;
 	
 	//private MessageChannel orderChannel;
 	 
@@ -94,12 +104,49 @@ public class CartController {
 	
 	@PostMapping("/orderCart")
 	public void orderCart(@RequestBody int cartId) {
+		
 		logger.debug("orderCart ::::  "+cartId);
 		StringBuilder message = new StringBuilder() ;
 		Optional<Cart> cartBean = cartRepository.findById(cartId);
 		cartRepository.deleteById(cartId);
 		Cart cart = cartBean.get();
 		message.append(cart.getProductName()).append("|").append(cart.getPrice());
+		logger.debug("message : "+message);
+		/*
+		 * Message<String> msg = MessageBuilder.withPayload(message.toString()).build();
+		 * this.orderChannel.send(msg);
+		 */
+	    logger.debug("order submitted");
+	}
+	
+	@PostMapping("/placeorder")
+	
+	public void placeOrder(@RequestBody Cart cartBean) {
+		
+		logger.debug("orderCart ::::  "+cartBean);
+		StringBuilder message = new StringBuilder() ;
+		List<Cart> cartitemDetails = cartRepository.findByUserName(cartBean.getUserName());
+		Orders orders;
+		
+		List<Orders> orderList=new ArrayList<Orders>();
+		for (Cart cart : cartitemDetails) {
+			orders = new Orders();
+			
+			orders.setUserId(cart.getUserName());
+			orders.setProductName(cart.getProductName());
+			orders.setProductPrice(cart.getPrice());
+			
+			orderList.add(orders);
+			
+			
+			cartRepository.deleteById(cart.getId());
+		}
+		
+		orderRepository.saveAll(orderList);
+		
+		
+		//Cart cart = cartBean.get();
+		message.append(cartBean.getProductName()).append("|").append(cartBean.getPrice());
 		logger.debug("message : "+message);
 		/*
 		 * Message<String> msg = MessageBuilder.withPayload(message.toString()).build();
