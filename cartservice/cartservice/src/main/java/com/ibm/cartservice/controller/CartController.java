@@ -86,7 +86,7 @@ public class CartController {
 				cartList.add(cart);
 			}
 		}
-		orderServiceSource.orderChannel().send(MessageBuilder.withPayload(cartBean).build());
+		//orderServiceSource.orderChannel().send(MessageBuilder.withPayload(cartBean).build());
 		cartRepository.saveAll(cartList);
 		
 		logger.debug("add to cart successful");
@@ -152,6 +152,7 @@ public class CartController {
 		 * Message<String> msg = MessageBuilder.withPayload(message.toString()).build();
 		 * this.orderChannel.send(msg);
 		 */
+		orderServiceSource.orderChannel().send(MessageBuilder.withPayload(orderList).build());
 	    logger.debug("order submitted");
 	}
 

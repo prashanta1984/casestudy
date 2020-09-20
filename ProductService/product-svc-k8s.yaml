@@ -1,0 +1,19 @@
+--- 
+apiVersion: v1
+kind: Service
+metadata: 
+  labels: 
+    app: productms
+    version: v1
+  name: productms
+  namespace: logs
+spec: 
+  ports: 
+    - 
+      name: http
+      port: 8093
+      targetPort: 8093
+  selector: 
+    app: productms
+    version: v1
+  type: NodePort
