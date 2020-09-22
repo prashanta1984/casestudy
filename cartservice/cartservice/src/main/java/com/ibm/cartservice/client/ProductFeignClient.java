@@ -12,10 +12,10 @@ import com.ibm.cartservice.dto.ProductDTO;
 @FeignClient("product-service")
 public interface ProductFeignClient {
 
-	@GetMapping("product/productlist/")
+	@GetMapping("product/productlist")
 	public ResponseEntity<ProductDTO> productDetails();
 
-	@GetMapping("product/{id}/")
+	@GetMapping("product/{id}")
 	public ResponseEntity<ProductDTO> getProduct(@PathVariable(value = "id") Long id);
 
 }

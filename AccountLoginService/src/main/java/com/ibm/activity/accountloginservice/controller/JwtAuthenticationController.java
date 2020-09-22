@@ -48,8 +48,10 @@ public class JwtAuthenticationController {
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
 					authenticationRequest.getUsername(), authenticationRequest.getPassword()));
-		} catch (BadCredentialsException e) {
-			aacountLoginSource.loginChannel().send(MessageBuilder.withPayload(authenticationRequest.getUsername() +"|"+authenticationRequest.getPassword()).build());
+		} catch (Exception e) {
+			System.out.println("Exception..."+e.getMessage());
+			//aacountLoginSource.loginChannel().send(MessageBuilder.withPayload(authenticationRequest.getUsername() +"|"+authenticationRequest.getPassword()).build());
+			aacountLoginSource.loginChannel().send(MessageBuilder.withPayload(authenticationRequest).build());
 			throw new Exception("Incorrect username or password", e);
 		}
 

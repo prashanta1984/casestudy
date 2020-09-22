@@ -21,18 +21,17 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect 
   application:    name: account-login-service
+  rabbitmq:
+   host: 192.168.99.100
+   port: 5672
+  
   cloud:
-    bus:
+   bus:
       enabled: true
       destination: configXchangebus
-    stream:
+   stream:
       bindings:
-        loginChannel:
-           destination: login
+       loginChannel:
+           destination: orders
     
     
-logging:
-  pattern:
-    console: '%d %p %X{correlationId} %M\(%F:%L\) - %msg%n'
-  level:
-    com.ibm.activity.accountloginservice: DEBUG  

@@ -120,15 +120,15 @@ public class CartController {
 	}
 	
 	@PostMapping("/placeorder")
-	
-	public void placeOrder(@RequestBody Cart cartBean) {
+	@Transactional
+	public void placeOrder(@RequestBody CartBean cartBean) {
 		
 		logger.debug("orderCart ::::  "+cartBean);
 		StringBuilder message = new StringBuilder() ;
 		List<Cart> cartitemDetails = cartRepository.findByUserName(cartBean.getUserName());
 		Orders orders;
 		
-		List<Orders> orderList=new ArrayList<Orders>();
+		ArrayList<Orders> orderList=new ArrayList<Orders>();
 		for (Cart cart : cartitemDetails) {
 			orders = new Orders();
 			
@@ -142,16 +142,11 @@ public class CartController {
 			cartRepository.deleteById(cart.getId());
 		}
 		
-		orderRepository.saveAll(orderList);
+		//orderRepository.saveAll(orderList);
+		orderFeignClient.placeOrder(orderList);
 		
 		
-		//Cart cart = cartBean.get();
-		message.append(cartBean.getProductName()).append("|").append(cartBean.getPrice());
-		logger.debug("message : "+message);
-		/*
-		 * Message<String> msg = MessageBuilder.withPayload(message.toString()).build();
-		 * this.orderChannel.send(msg);
-		 */
+		
 		orderServiceSource.orderChannel().send(MessageBuilder.withPayload(orderList).build());
 	    logger.debug("order submitted");
 	}

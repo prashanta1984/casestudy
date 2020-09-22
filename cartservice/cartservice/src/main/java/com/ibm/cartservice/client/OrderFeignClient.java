@@ -1,15 +1,19 @@
 package com.ibm.cartservice.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+
+import com.ibm.cartservice.bean.Orders;
 import com.ibm.cartservice.dto.OrdersDTO;
 
-@FeignClient("orders-service")
+@FeignClient("orderms")
 public interface OrderFeignClient {
-	@PostMapping("/orderservice/orders")
-	ResponseEntity<OrdersDTO> placeOrder(@RequestBody OrdersDTO orderDto,
-			@RequestHeader("Authorization") String authHeader);
+	@PostMapping("/orderservice/placeorder")
+	public void placeOrder(@RequestBody ArrayList<Orders> list);
 }
