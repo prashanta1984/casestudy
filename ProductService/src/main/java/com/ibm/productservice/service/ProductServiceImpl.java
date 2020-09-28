@@ -12,6 +12,7 @@ import com.ibm.productservice.client.ProductRestClient;
 import com.ibm.productservice.domain.Product;
 import com.ibm.productservice.dto.ProductDTO;
 import com.ibm.productservice.dto.ProductMapper;
+import com.ibm.productservice.exception.ResourceNotFoundException;
 import com.ibm.productservice.repository.ProductRepository;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
@@ -29,7 +30,7 @@ public class ProductServiceImpl implements IProductService {
 		this.restClient = restClient;
 	}
 
-	@HystrixCommand(fallbackMethod = "taxServiceFallback")
+	//@HystrixCommand(fallbackMethod = "taxServiceFallback")
 	public ProductDTO getProductById(Long id) {
 
 		Optional<Product> product = productRepository.findById(id);
@@ -38,11 +39,18 @@ public class ProductServiceImpl implements IProductService {
 		if (product.isPresent()) {
 			ProductMapper productMapper = new ProductMapper();
 			productDto = productMapper.convertProductToProductDTO(product.get());
-			logger.info(" Tax service call to get the tax for given product name:"+productDto.getProductName());
-			Long tax = restClient.getTax(productDto.getProductName());
-			logger.info(" Tax value:"+tax);
-			productDto.setTax(tax);
+			//logger.info(" Tax service call to get the tax for given product name:"+productDto.getProductName());
+			//Long tax = restClient.getTax(productDto.getProductName());
+			//logger.info(" Tax value:"+tax);
+			productDto.setTax(3L);
 		}
+		else
+			
+		{  
+			logger.debug("product "+ id + " does not exits!!");
+			throw new ResourceNotFoundException("product "+ id + " does not exits!!");
+		}
+		
 		return productDto;
 	}
 

@@ -1,0 +1,19 @@
+--- 
+apiVersion: v1
+kind: Service
+metadata: 
+  labels: 
+    app: auditms
+    version: v1
+  name: auditms
+  namespace: logs
+spec: 
+  ports: 
+    - 
+      name: http
+      port: 8096
+      targetPort: 8096
+  selector: 
+    app: auditms
+    version: v1
+  type: NodePort

@@ -55,7 +55,7 @@ public class MyUserDetailsServiceImpl implements UserDetailsService {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public List findAll() {
+	public List<User> findAll() {
 		return userRepository.findAll();
 	}
 

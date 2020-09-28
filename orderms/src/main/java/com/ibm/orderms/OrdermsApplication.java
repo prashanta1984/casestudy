@@ -30,8 +30,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 public class OrdermsApplication {
 	
 	private static Logger log = LoggerFactory.getLogger(OrdermsApplication.class);
-	@Autowired
-	OrdersRepository ordersRepository;
+	//@Autowired
+	//OrdersRepository ordersRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(OrdermsApplication.class, args);

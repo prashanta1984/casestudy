@@ -12,12 +12,17 @@ public class Cart {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer id;
+	
 	@Column(name = "user")
 	private String userName ;
 	@Column(name = "productName")
 	private String productName ;
 	@Column(name = "mrp")
 	private double price ;
+	
+	@Column(name = "qty")
+	private int quantity ;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -42,8 +47,17 @@ public class Cart {
 	public void setPrice(double price) {
 		this.price = price;
 	}
+	public int getQuantity() {
+		return quantity;
+	}
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+	
 	@Override
 	public String toString() {
-		return "Cart [id=" + id + ", userName=" + userName + ", productName=" + productName + ", price=" + price + "]";
-	}	
+		return "Cart [id=" + id + ", userName=" + userName + ", productName=" + productName + ", price=" + price
+				+ ", quantity=" + quantity + "]";
+	}
+		
 }

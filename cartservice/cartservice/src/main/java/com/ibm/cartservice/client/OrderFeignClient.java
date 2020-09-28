@@ -15,5 +15,5 @@ import com.ibm.cartservice.dto.OrdersDTO;
 @FeignClient("orderms")
 public interface OrderFeignClient {
 	@PostMapping("/orderservice/placeorder")
-	public void placeOrder(@RequestBody ArrayList<Orders> list);
+	public void placeOrder(@RequestBody ArrayList<Orders> list,@RequestHeader("Authorization") String authHeaderr,@RequestHeader("X-Correlation-Id") String coId);
 }

@@ -9,13 +9,16 @@ import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.integration.support.MessageBuilder;
@@ -64,25 +67,26 @@ public class CartController {
 	{
 		CartBean cartBean= new CartBean();
 		List<Product> productList= new ArrayList<Product>();
-		productList.add(new Product(1L, "Table", "Dining", 500));
+		productList.add(new Product(1L, "Table", "Dining", 500,5));
 		cartBean.setProducts(productList);
 		return cartBean;
 	}
 
 	@PostMapping("/cartAdd")
 	@Transactional
-	public void addCart(@RequestBody CartBean cartBean) {
+	public ResponseEntity<?> addCart(@RequestBody CartBean cartBean,@RequestHeader("Authorization") String authHeaderr) {
 		
 		List<Cart> cartList = new ArrayList<>();
 		Cart cart;
 		for (Product product : cartBean.getProducts()) {
-			ResponseEntity<ProductDTO> productDetailsById = productFeignClient.getProduct(product.getId());
+			ResponseEntity<ProductDTO> productDetailsById = productFeignClient.getProduct(product.getId(),MDC.get("correlationId"));
 			if(productDetailsById !=null)
 			{
 				cart = new Cart();
 				cart.setUserName(cartBean.getUserName());
 				cart.setProductName(product.getName());
 				cart.setPrice(product.getMrp());
+				cart.setQuantity(product.getQuantity());
 				cartList.add(cart);
 			}
 		}
@@ -90,6 +94,9 @@ public class CartController {
 		cartRepository.saveAll(cartList);
 		
 		logger.debug("add to cart successful");
+		return new ResponseEntity<>("User " 
+		 		+ " itenms added cart Successfully!!", HttpStatus.CREATED);
+	
 	}
 
 	@GetMapping("/allCartList/{user}")
@@ -121,7 +128,7 @@ public class CartController {
 	
 	@PostMapping("/placeorder")
 	@Transactional
-	public void placeOrder(@RequestBody CartBean cartBean) {
+	public ResponseEntity<?> placeOrder(@RequestBody CartBean cartBean,@RequestHeader("Authorization") String authHeaderr) {
 		
 		logger.debug("orderCart ::::  "+cartBean);
 		StringBuilder message = new StringBuilder() ;
@@ -143,12 +150,14 @@ public class CartController {
 		}
 		
 		//orderRepository.saveAll(orderList);
-		orderFeignClient.placeOrder(orderList);
+		orderFeignClient.placeOrder(orderList,authHeaderr,MDC.get("correlationId"));
 		
 		
 		
 		orderServiceSource.orderChannel().send(MessageBuilder.withPayload(orderList).build());
 	    logger.debug("order submitted");
+	    return new ResponseEntity<>("order " 
+		 		+ " Placed Successfully!!", HttpStatus.CREATED);
 	}
 
 }

@@ -1,0 +1,19 @@
+mvn clean package -DskipTests
+
+docker build -t prashantadockertest/productms:2 .
+
+docker run -p 8093:8093 -d --name productms  --env productms.eureka.url=http://192.168.99.100:8761/eureka prashantadockertest/productms:2
+
+docker build -t prashantadockertest/loginms:1 .
+
+docker run -p 8091:8091 -d --name loginms  --env loginms.eureka.url=http://192.168.99.100:8761/eureka prashantadockertest/loginms:1
+
+docker build -t prashantadockertest/cartms:1 .
+
+docker run -p 8095:8095 -d --name cartms  --env cartms.eureka.url=http://192.168.99.100:8761/eureka prashantadockertest/cartms:1
+
+docker build -t prashantadockertest/productms:2 .
+
+docker run -p 8093:8093 -d --name productms  --env productms.eureka.url=http://192.168.99.100:8761/eureka prashantadockertest/productms:2
+
+

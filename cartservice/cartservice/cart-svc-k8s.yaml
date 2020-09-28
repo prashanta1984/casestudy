@@ -1,0 +1,19 @@
+--- 
+apiVersion: v1
+kind: Service
+metadata: 
+  labels: 
+    app: cartms
+    version: v1
+  name: cartms
+  namespace: logs
+spec: 
+  ports: 
+    - 
+      name: http
+      port: 8095
+      targetPort: 8095
+  selector: 
+    app: cartms
+    version: v1
+  type: NodePort

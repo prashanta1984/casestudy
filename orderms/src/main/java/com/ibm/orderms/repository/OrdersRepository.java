@@ -1,8 +1,10 @@
-package com.ibm.orderms;
+package com.ibm.orderms.repository;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.ibm.orderms.entity.Orders;
 
 
 

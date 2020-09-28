@@ -3,9 +3,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata: 
   labels: 
-    app: productms
+    app: cartms
     version: v1
-  name: productms
+  name: cartms
   namespace: logs
 spec: 
   strategy: # Default, so usually not specified
@@ -16,28 +16,28 @@ spec:
   replicas: 1
   selector: 
     matchLabels: 
-      app: productms
+      app: cartms
       version: v1
   template: 
     metadata: 
       labels: 
-        app: productms
+        app: cartms
         version: v1
 
     spec: 
 
       containers: 
         - 
-          image: "prashantadockertest/productms:2"
+          image: "prashantadockertest/cartms:1"
           imagePullPolicy: Always
-          name: productms
+          name: cartms
           ports: 
 #          - containerPort: 8081   
           - name: httpport
-            containerPort: 8093
-            hostPort: 8093      
+            containerPort: 8095
+            hostPort: 8095      
           env:
-            - name: productms.eureka.url
+            - name: cartms.eureka.url
               value: "http://eureka:8761/eureka"  
 
               

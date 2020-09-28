@@ -1,4 +1,4 @@
-package com.ibm.orderms;
+package com.ibm.orderms.entity;
 
 import java.util.List;
 

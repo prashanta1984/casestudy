@@ -4,6 +4,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import com.ibm.cartservice.dto.ProductDTO;
 
@@ -16,6 +17,6 @@ public interface ProductFeignClient {
 	public ResponseEntity<ProductDTO> productDetails();
 
 	@GetMapping("product/{id}")
-	public ResponseEntity<ProductDTO> getProduct(@PathVariable(value = "id") Long id);
+	public ResponseEntity<ProductDTO> getProduct(@PathVariable(value = "id") Long id,@RequestHeader("X-Correlation-Id") String coId);
 
 }

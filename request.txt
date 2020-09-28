@@ -1,0 +1,240 @@
+post http://localhost:8091/loginservice/createuser
+{
+    "username":"Prashanta",
+    "password": "Prashanta@1234",
+    "enabled": "true"
+}
+
+post http://localhost:8091/authenticate
+
+{
+    "username":"Prashanta",
+    "password": "Prashanta@1234"
+}
+
+
+get http://localhost:8091/loginservice/1
+token required
+
+http://localhost:8091/loginservice/getAlluser
+
+token required
+
+http://localhost:8092/orderservice/users/1/orders
+
+post
+http://localhost:8092/orderservice/orders
+
+{
+    "userId": "1",
+    "productId": "1"
+}
+
+exception
+
+{
+    "userId": "10",
+    "productId": "1"
+}
+http://localhost:8093/product/15
+
+http://localhost:8095/cart/cartAdd
+{
+    "userName": "prashanta",
+    "products": [
+         {
+            "id": 18,
+            "name": "Table",
+            "shortDescription": "Dining",
+            "mrp": 500.0,
+			"quantity": 3
+        },
+	    {
+            "id": 2,
+            "name": "chair",
+            "shortDescription": "long chair",
+            "mrp": 500.0,
+			"quantity": 5
+        }
+    ]
+}
+
+http://localhost:8095/cart/placeorder
+{
+    "userName": "prashanta",
+    "products": [
+         {
+            "id": 18,
+            "name": "Table",
+            "shortDescription": "Dining",
+            "mrp": 500.0,
+			"quantity": 3
+        },
+	    {
+            "id": 2,
+            "name": "chair",
+            "shortDescription": "long chair",
+            "mrp": 500.0,
+			"quantity": 5
+        }
+    ]
+}
+
+http://localhost:8097/orderservice/getorders
+
+
+
+
+
+get http://localhost:8091/loginservice/1
+
+pass the header got it from Authenticate
+
+http://localhost:8092/orderservice/users/1/orders
+
+http://localhost:8091/loginservice/getAlluser
+
+----------------------------------------
+
+http://localhost:8091/authenticate
+
+http://localhost:8091/loginservice/1
+
+{
+    "username":"Anuj",
+    "password": "Anuj@1234"
+}
+
+http://localhost:8092/orderservice/orders
+
+{
+    "userId": "1",
+    "productId": "1"
+}
+
+http://localhost:8092/orderservice/users/1/orders
+
+http://localhost:8091/loginservice/getAlluser
+
+http://localhost:8091/loginservice/createuser
+
+{
+    "username":"Param",
+    "password": "Param@1234",
+    "enabled": "true"
+}
+
+cart Service
+--------------
+http://localhost:8095/cart/check
+{
+        "productName": "APPLETON",
+        "quantity": 1,
+        "price": 35.75,
+        "discount": 5.0,
+        "id": 1
+    },
+    {
+        "productName": "HOFFMAN AHE12X10X4",
+        "quantity": 5,
+        "price": 34.5,
+        "discount": 7.0,
+        "id": 2
+    },
+    {
+        "productName": "Sylvania",
+        "quantity": 3,
+        "price": 1500.0,
+        "discount": 8.0,
+        "id": 3
+    },
+    {
+        "productName": "AJC",
+        "quantity": 40,
+        "price": 1000.0,
+        "discount": 9.0,
+        "id": 4
+    },
+    {
+        "productName": "Hubbell HBL2741",
+        "quantity": 80,
+        "price": 450.45,
+        "discount": 15.67,
+        "id": 5
+    },
+    {
+        "productName": "Fasteners And Fittings ",
+        "quantity": 800,
+        "price": 1.76,
+        "discount": 75.86,
+        "id": 6
+    },
+    {
+        "productName": "Weidmuller Inc.",
+        "quantity": 700,
+        "price": 45000.0,
+        "discount": 89.56,
+        "id": 7
+    },
+    {
+        "productName": "General Cable Canada Ltd",
+        "quantity": 500,
+        "price": 300.0,
+        "discount": 65.79,
+        "id": 8
+    },
+    {
+        "productName": "STEP STAKE SS-1 2 WIRE COROSTAKE",
+        "quantity": 1000,
+        "price": 500.0,
+        "discount": 76.65,
+        "id": 9
+    }
+]
+http://localhost:8095/cart/cartAdd
+{
+    "userName": "prashanta",
+    "products": [
+        {
+            "id": 18,
+            "name": "Table",
+            "shortDescription": "Dining",
+            "mrp": 500.0
+        }
+    ]
+}
+http://localhost:8095/cart/allCartList/prashanta
+
+http://localhost:8095/cart/allCartList/prashanta
+
+
+@Component
+public class UserFeignClientInterceptor implements RequestInterceptor {
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String BEARER_TOKEN_TYPE = "Bearer";
+    @Override
+    public void apply(RequestTemplate template) {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
+        if (authentication != null && authentication.getDetails() instanceof OAuth2AuthenticationDetails) {
+            OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
+            template.header(AUTHORIZATION_HEADER, String.format("%s %s", BEARER_TOKEN_TYPE, details.getTokenValue()));
+        }
+    }
+}
+docker
+
+zipkin:http://192.168.99.100:9411/zipkin/
+http://192.168.99.100:8091/loginservice/createuser
+{
+    "username":"Prashanta",
+    "password": "Prashanta@1234",
+    "enabled": "true"
+}
+
+http://192.168.99.100:8091/authenticate
+
+
+kubernate
+----------
+eureka:http://192.168.99.105:30266/

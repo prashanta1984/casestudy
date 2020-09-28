@@ -1,5 +1,7 @@
 package com.ibm.activity.accountloginservice.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ibm.activity.accountloginservice.domain.User;
 import com.ibm.activity.accountloginservice.dto.MyUserDetailsDTO;
 import com.ibm.activity.accountloginservice.service.MyUserDetailsServiceImpl;
 
@@ -45,8 +48,8 @@ public class AccountLoginController {
 	}
 
 	@GetMapping("/getAlluser")
-	public <T> ResponseEntity<T> userDetails() {
-		return new ResponseEntity<>(myServiceUserData.findAll(), HttpStatus.OK) ;
+	public List<User> userDetails() {
+		return myServiceUserData.findAll();
 	}
 	
 	
